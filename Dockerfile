@@ -30,7 +30,7 @@ COPY docker-entrypoint-initdb-import/* /docker-entrypoint-initdb-import/
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY healthcheck.sh /healthcheck.sh
 ENTRYPOINT ["/entrypoint.sh"]
-HEALTHCHECK CMD /healthcheck.sh
+HEALTHCHECK --timeout=15m CMD /healthcheck.sh
 EXPOSE 3306
 CMD ["mysqld"]
 
