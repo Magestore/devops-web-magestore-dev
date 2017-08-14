@@ -14,8 +14,7 @@
 
 ## Run docker image
 
-With user name: staging
-          pass: 8wCzfkp6DT9Ynt
+With user name: staging, password: 8wCzfkp6DT9Ynt
 
 ```
   docker run -d --name staging_mysql \
