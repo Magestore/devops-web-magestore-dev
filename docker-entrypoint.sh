@@ -141,7 +141,7 @@ EOF
 				case "$f" in
 					*.sql) 
 					echo "[Entrypoint] use db $MYSQL_DATABASE"; echo "use $MYSQL_DATABASE;" | "${mysql[@]}" && echo
-					echo "[Entrypoint] import db $f"; echo "source $f;" | "${mysql[@]}" && echo
+					echo "[Entrypoint] Importing db $f"; echo "source $f;" | "${mysql[@]}" && echo
 					;;
 				esac
 			done
