@@ -137,11 +137,12 @@ EOF
 		echo
 		
 		if [ "$MYSQL_DATABASE" ]; then
+			echo "[Entrypoint] use db $MYSQL_DATABASE"; echo "use $MYSQL_DATABASE;" | "${mysql[@]}" && echo
 			for f in /docker-entrypoint-initdb-import/*; do
 				case "$f" in
 					*.sql) 
-					echo "[Entrypoint] use db $MYSQL_DATABASE"; echo "use $MYSQL_DATABASE;" | "${mysql[@]}" && echo
 					echo "[Entrypoint] Importing db $f"; echo "source $f;" | "${mysql[@]}" && echo
+					echo "[Entrypoint] Remove imported file $f" ; rm -f $f
 					;;
 				esac
 			done
