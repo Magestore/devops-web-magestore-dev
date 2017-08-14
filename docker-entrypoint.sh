@@ -135,6 +135,13 @@ EOF
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 		fi
 		echo
+		
+		for f in /docker-entrypoint-initdb-import/*; do
+                        case "$f" in
+                                *.sql) echo "[Entrypoint] import db $f"; echo "source $f" | "${mysql[@]}" && echo ;;
+                        esac
+                done
+		
 		for f in /docker-entrypoint-initdb.d/*; do
 			case "$f" in
 				*.sh)  echo "[Entrypoint] running $f"; . "$f" ;;
