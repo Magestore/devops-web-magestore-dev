@@ -6,9 +6,9 @@ echo "Installing"
 
 echo "Pull source code from git source, enter github username & password:"
 ## clear data/www/
-mkdir -p data/www
 echo "clearning data/www/*"
-rm -rf data/www/*
+rm -rf data/www
+mkdir -p data/www
 git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www/
 rm -rf data/www/.git # remove git info
 
