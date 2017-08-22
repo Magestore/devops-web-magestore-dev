@@ -87,16 +87,13 @@ ${EXPORT_DB_NAME}.customer_entity_varchar \
 > magestore_db_customer.sql
 
 echo "chown data/www:"
-
 chown www-data:www-data data/www
 
 echo "chown data/database:"
-
 chown mysql:mysql data/database
 
 ## Run docker-compose
 echo "Run docker-compose:"
-
 docker-compose up -d
 
 ## Import db
