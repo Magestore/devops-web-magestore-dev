@@ -1,0 +1,17 @@
+#server {
+#	listen ${NGINX_PORT};
+#	ssl	on;
+#	
+#	server_name ${NGINX_HOST};
+#	ssl_certificate /etc/nginx/ssl/nginx.crt;
+#	ssl_certificate_key /etc/nginx/ssl/nginx.key;
+#
+#	location / {
+#		proxy_pass http://${PROXY_PASS_HOST}:${PROXY_PASS_PORT};
+#		proxy_set_header X-Real-IP $${REMOTE_ADDR};
+#		proxy_set_header X-Forwarded-For $${PROXY_ADD_X_FORWARDED_FOR};
+#		proxy_set_header X-Forwarded-Proto https;
+#		proxy_set_header X-Forwarded-Port 443;
+#		proxy_set_header Host $${HOST};
+#	}
+#}
