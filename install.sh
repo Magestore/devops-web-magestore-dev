@@ -111,6 +111,8 @@ mysql -u root -p'' ${db_name} < magestore_db_customer.sql
 
 echo "Delete file magestore_db.sql"
 rm magestore_db.sql
+echo "Delete file magestore_db_customer.sql"
+rm magestore_db_customer.sql
 
 echo "delete Customer:"
 mysql -u root -p'' -e "DELETE FROM customer_entity WHERE created_at < '{DATE_TIME}'" ${db_name}
