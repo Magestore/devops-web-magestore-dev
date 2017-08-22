@@ -10,6 +10,7 @@ echo "Pull source code from git source, enter github username & password:"
 mkdir -p data/www
 rm -rf data/www/*
 git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www/
+rm -rf data/www/.git # remove git info
 
 ## create function
 randpw(){ < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-16};echo;}
