@@ -4,7 +4,7 @@
 
 echo "Installing"
 
-echo "Pull code from git source, enter github username & password:"
+echo "Pull source code from git source, enter github username & password:"
 
 ## clear data/www/
 mkdir -p data/www
