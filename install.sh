@@ -33,7 +33,7 @@ DATE_TIME=$( date -u "+${DATE_TIME}-${DATE_MONTH}-%d %H:%M:%S" ) # compile all t
 
 ## Export database with ignored tables
 echo "Pull database, enter root password:"
-mysqldump --host=${EXPORT_DB_HOST} -u root -p'${CLOUDSQL_ROOT_PASS}' --opt --single-transaction --quick --set-gtid-purged=OFF \
+mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_fulltext \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_query \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_result \
@@ -75,7 +75,7 @@ mysqldump --host=${EXPORT_DB_HOST} -u root -p'${CLOUDSQL_ROOT_PASS}' --opt --sin
 ${EXPORT_DB_NAME} > magestore_db.sql
 
 ## Export customer schema
-mysqldump --host=${EXPORT_DB_HOST} -u root -p'${CLOUDSQL_ROOT_PASS}' --opt --single-transaction --no-data --quick --set-gtid-purged=OFF \
+mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --single-transaction --no-data --quick --set-gtid-purged=OFF \
 --where="created_at < '${DATE_TIME}'" \
 ${EXPORT_DB_NAME} \
 ${EXPORT_DB_NAME}.customer_address_entity \
