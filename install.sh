@@ -38,18 +38,23 @@ mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --singl
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_query \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_result \
 --ignore-table=${EXPORT_DB_NAME}.core_session \
---ignore-table=${EXPORT_DB_NAME}.customer_address_entity \
+--ignore-table=${EXPORT_DB_NAME}.customer_address_entity          \
 --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_datetime \
---ignore-table=${EXPORT_DB_NAME}.customer_address_entity_decimal \
---ignore-table=${EXPORT_DB_NAME}.customer_address_entity_int \
---ignore-table=${EXPORT_DB_NAME}.customer_address_entity_text \
---ignore-table=${EXPORT_DB_NAME}.customer_address_entity_varchar \
---ignore-table=${EXPORT_DB_NAME}.customer_entity \
---ignore-table=${EXPORT_DB_NAME}.customer_entity_datetime \
---ignore-table=${EXPORT_DB_NAME}.customer_entity_decimal \
---ignore-table=${EXPORT_DB_NAME}.customer_entity_int \
---ignore-table=${EXPORT_DB_NAME}.customer_entity_text \
---ignore-table=${EXPORT_DB_NAME}.customer_entity_varchar \
+--ignore-table=${EXPORT_DB_NAME}.customer_address_entity_decimal  \
+--ignore-table=${EXPORT_DB_NAME}.customer_address_entity_int      \
+--ignore-table=${EXPORT_DB_NAME}.customer_address_entity_text     \
+--ignore-table=${EXPORT_DB_NAME}.customer_address_entity_varchar  \
+--ignore-table=${EXPORT_DB_NAME}.customer_eav_attribute           \
+--ignore-table=${EXPORT_DB_NAME}.customer_eav_attribute_website   \
+--ignore-table=${EXPORT_DB_NAME}.customer_entity                  \
+--ignore-table=${EXPORT_DB_NAME}.customer_entity_datetime         \
+--ignore-table=${EXPORT_DB_NAME}.customer_entity_decimal          \
+--ignore-table=${EXPORT_DB_NAME}.customer_entity_int              \
+--ignore-table=${EXPORT_DB_NAME}.customer_entity_text             \
+--ignore-table=${EXPORT_DB_NAME}.customer_entity_varchar          \
+--ignore-table=${EXPORT_DB_NAME}.customer_flowpassword            \
+--ignore-table=${EXPORT_DB_NAME}.customer_form_attribute          \
+--ignore-table=${EXPORT_DB_NAME}.customer_group                   \
 --ignore-table=${EXPORT_DB_NAME}.dataflow_batch \
 --ignore-table=${EXPORT_DB_NAME}.dataflow_batch_export \
 --ignore-table=${EXPORT_DB_NAME}.dataflow_batch_import \
@@ -78,18 +83,18 @@ ${EXPORT_DB_NAME} > magestore_db.sql
 mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --single-transaction --no-data --quick --set-gtid-purged=OFF \
 --where="created_at < '${DATE_TIME}'" \
 ${EXPORT_DB_NAME} \
-${EXPORT_DB_NAME}.customer_address_entity \
-${EXPORT_DB_NAME}.customer_address_entity_datetime \
-${EXPORT_DB_NAME}.customer_address_entity_decimal \
-${EXPORT_DB_NAME}.customer_address_entity_int \
-${EXPORT_DB_NAME}.customer_address_entity_text \
-${EXPORT_DB_NAME}.customer_address_entity_varchar \
-${EXPORT_DB_NAME}.customer_entity \
-${EXPORT_DB_NAME}.customer_entity_datetime \
-${EXPORT_DB_NAME}.customer_entity_decimal \
-${EXPORT_DB_NAME}.customer_entity_int \
-${EXPORT_DB_NAME}.customer_entity_text \
-${EXPORT_DB_NAME}.customer_entity_varchar \
+customer_address_entity \
+customer_address_entity_datetime \
+customer_address_entity_decimal \
+customer_address_entity_int \
+customer_address_entity_text \
+customer_address_entity_varchar \
+customer_entity \
+customer_entity_datetime \
+customer_entity_decimal \
+customer_entity_int \
+customer_entity_text \
+customer_entity_varchar \
 > magestore_db_customer.sql
 
 echo "chown data/www:"
