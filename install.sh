@@ -69,7 +69,7 @@ ${EXPORT_DB_NAME} > magestore_db.sql
 
 ## Export customer schema
 mysqldump --no-data --quick --set-gtid-purged=OFF \
---where="created_at < '${DATE_TIME}'"
+--where="created_at < '${DATE_TIME}'" \
 ${EXPORT_DB_NAME} \
 ${EXPORT_DB_NAME}.customer_address_entity \
 ${EXPORT_DB_NAME}.customer_address_entity_datetime \
