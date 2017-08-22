@@ -13,21 +13,12 @@ read CLOUDSQL_ROOT_PASS
 echo "Installing"
 
 echo "Pull source code from git source, enter github username & password:"
-## cache pull source code
-if [ -f "data/www_cached/.git" ]; then
-  cd data/www_cached && git pull
-  copy -R data/www_cached data/www_new
-  rm -rf data/www_new/.git
-  rm -rf data/www
-  mv data/www_new data/www
-else
-  ## clear data/www/
-  echo "clearning data/www/*"
-  #rm -rf data/www
-  #mkdir -p data/www
-  #git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www/
-  #rm -rf data/www/.git # remove git info
-fi
+## clear data/www/
+echo "clearning data/www/*"
+#rm -rf data/www
+#mkdir -p data/www
+#git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www
+#rm -rf data/www/.git # remove git info
 
 ## create function
 randpw(){ < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-16};echo;}
