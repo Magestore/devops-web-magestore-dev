@@ -51,18 +51,6 @@ services:
       #- ./config/php/5.6/php.ini:/etc/php/5.6/cli/php.ini
       ## php.ini for php 7.x and remove environment varibles.
       #- ./config/php/7.0/php.ini:/etc/php/7.0/apache2/php.ini
-      ## Opcache for php 7.0
-      # - ./config/php/opcache-recommended.ini:/etc/php/7.0/apache2/conf.d/10-opcache.ini
-      ## APC for php 7.0. Necessary to works APCu in PHP 7.0.
-      # - ./config/php/apc.ini:/etc/php/7.0/apache2/conf.d/20-apc.ini
-      ## APCU for php 7.0
-      # - ./config/php/apcu.ini:/etc/php/7.0/apache2/conf.d/20-apcu.ini
-      ## Xdebug for php 7.0
-      # - ./config/php/xdebug.ini:/etc/php/7.0/apache2/conf.d/20-xdebug.ini
-      ## Xhprof for php 7.0
-      #- ./config/php/xhprof.ini:/etc/php/7.0/apache2/conf.d/20-xhprof.ini
-      ## Drush aliases support. e.g.
-      # - ~/.drush:/root/.drush
       ## SSH support. e.g.
       # - ~/.ssh:/root/.ssh
     environment:
@@ -84,8 +72,8 @@ services:
       #- MYSQL_RANDOM_ROOT_PASSWORD=yes
       ## change these infomations
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=
-      - MYSQL_USER=
+      - MYSQL_DATABASE=magestore_live
+      - MYSQL_USER=magestore
       - MYSQL_PASSWORD=
   redis:
     # keopx/redis available tags: latest, 3.2, 3.0
