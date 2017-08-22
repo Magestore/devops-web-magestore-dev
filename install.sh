@@ -121,11 +121,11 @@ docker cp magestore_db.sql ${container_id_mysql}:/tmp/magestore_db.sql
 docker cp magestore_db_customer.sql ${container_id_mysql}:/tmp/magestore_db_customer.sql
 
 echo "Importing database:"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'123' ${db_name} < /tmp/magestore_db.sql"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'123' ${db_name} < /tmp/magestore_db_customer.sql"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db.sql"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_customer.sql"
 
 echo "delete Customer in database container:"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'123' -e \"DELETE FROM customer_entity WHERE created_at < '{DATE_TIME}'\" ${db_name}"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"DELETE FROM customer_entity WHERE created_at < '{DATE_TIME}'\" ${db_name}"
 
 echo "Delete sql files in mysql container:"
 docker exec -it ${container_id_mysql} rm /tmp/magestore_db.sql
@@ -138,12 +138,12 @@ rm magestore_db_customer.sql
 
 ## create database user
 echo "create user \`${db_user}\` access database:"
-docker exec -it ${container_id_mysql} mysql -u root -p'123' -e "CREATE USER IF NOT EXISTS ${db_user}"
-docker exec -it ${container_id_mysql} mysql -u root -p'123' -e "SET PASSWORD FOR '${db_user}'@'%' = PASSWORD('${db_user_pass}')"
-docker exec -it ${container_id_mysql} mysql -u root -p'123' -e "GRANT ALL ON ${db_name}.* TO '${db_user}'@'%'"
+docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "CREATE USER IF NOT EXISTS ${db_user}"
+docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "SET PASSWORD FOR '${db_user}'@'%' = PASSWORD('${db_user_pass}')"
+docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "GRANT ALL ON ${db_name}.* TO '${db_user}'@'%'"
 
 echo "change new root password:"
-docker exec -it ${container_id_mysql} mysql -u root -p'123' -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${newrootpass}')"
+docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${newrootpass}')"
 
 echo "#################"
 echo "---Info---"
