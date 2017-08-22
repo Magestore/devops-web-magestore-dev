@@ -138,7 +138,8 @@ rm magestore_db_customer.sql
 
 ## create database user
 echo "create user \`${db_user}\` access database:"
-docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "CREATE USER IF NOT EXISTS ${db_user}"
+#docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "CREATE USER IF NOT EXISTS ${db_user}" # mysql > 5.7
+docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "CREATE USER ${db_user}" # mysql < 5.6
 docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "SET PASSWORD FOR '${db_user}'@'%' = PASSWORD('${db_user_pass}')"
 docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "GRANT ALL ON ${db_name}.* TO '${db_user}'@'%'"
 
@@ -148,4 +149,4 @@ docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "SET PASSWORD FO
 echo "#################"
 echo "---Info---"
 echo "Mysql root password: ${newrootpass}"
-echo "Db User: ${db_user} / ${newpass}"
+echo "Db User: ${db_user} / ${db_user_pass}"
