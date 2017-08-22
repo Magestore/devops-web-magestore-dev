@@ -106,8 +106,8 @@ newrootpass=$(randpw)
 
 ## Import database
 echo "Importing database:"
-mysql -u root -p ${db_name} < magestore_db.sql
-mysql -u root -p ${db_name} < magestore_db_customer.sql
+mysql -u root -p'' ${db_name} < magestore_db.sql
+mysql -u root -p'' ${db_name} < magestore_db_customer.sql
 
 echo "Delete file magestore_db.sql"
 rm magestore_db.sql
