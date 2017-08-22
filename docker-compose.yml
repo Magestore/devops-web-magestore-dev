@@ -1,0 +1,108 @@
+version: '2'
+services:
+  varnish:
+    image: thinlt/varnish:5.1
+    ports:
+      - "80:80"
+      - "6082:6082"
+    volumes:
+      - ./config/varnish/default.vcl:/etc/varnish/default.vcl
+      ## mattiasgeniar file: https://github.com/mattiasgeniar/varnish-4.0-configuration-templates
+      # - ./config/varnish/drupal-template.vcl:/etc/varnish/default.vcl
+      ## Niteman file: https://github.com/NITEMAN/varnish-bites/blob/master/varnish4/drupal-base.vcl
+      # - ./config/varnish/drupal-base.vcl:/etc/varnish/default.vcl
+    #environment:
+      # - VARNISH_PORT=80
+      # - VARNISH_MEMORY=500M
+      ## Next values only works with default default.vcl file. Not use with -v ./config/varnish/default.vcl:/etc/varnish/default.vcl
+      #- VARNISH_BACKEND_IP=apache-php
+      #- VARNISH_BACKEND_PORT=80
+    links:
+      - apache-php
+  proxy:
+    ## use nginx for proxy server, install ssl here
+    image: nginx
+    ports:
+      - "443:443"
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./config/nginx/ssl:/etc/nginx/ssl
+    
+    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/default_ssl_temp.conf.template > /etc/nginx/conf.d/default_ssl_temp.conf && nginx -g 'daemon off;'"
+    links:
+      - varnish
+    
+  apache-php:
+    # thinlt/apache-php available tags: latest, 7.2, 5.6.
+    image: thinlt/apache-php:5.6
+    ports:
+      # 8008 works without varnish.
+      - "8008:80"
+      # - "443:443"
+    links:
+      - mysql
+      - redis
+      - mail
+    volumes:
+      ## Data.
+      - ./data/www:/var/www
+      - ./config/vhosts:/etc/apache2/sites-enabled
+      ## php.ini for php 5.6
+      #- ./config/php/5.6/php.ini:/etc/php/5.6/cli/php.ini
+      ## php.ini for php 7.x and remove environment varibles.
+      #- ./config/php/7.0/php.ini:/etc/php/7.0/apache2/php.ini
+      ## Opcache for php 7.0
+      # - ./config/php/opcache-recommended.ini:/etc/php/7.0/apache2/conf.d/10-opcache.ini
+      ## APC for php 7.0. Necessary to works APCu in PHP 7.0.
+      # - ./config/php/apc.ini:/etc/php/7.0/apache2/conf.d/20-apc.ini
+      ## APCU for php 7.0
+      # - ./config/php/apcu.ini:/etc/php/7.0/apache2/conf.d/20-apcu.ini
+      ## Xdebug for php 7.0
+      # - ./config/php/xdebug.ini:/etc/php/7.0/apache2/conf.d/20-xdebug.ini
+      ## Xhprof for php 7.0
+      #- ./config/php/xhprof.ini:/etc/php/7.0/apache2/conf.d/20-xhprof.ini
+      ## Drush aliases support. e.g.
+      # - ~/.drush:/root/.drush
+      ## SSH support. e.g.
+      # - ~/.ssh:/root/.ssh
+    environment:
+      ### WARNING: Use only if you not use custom php.ini.
+      ## ssmtp mail sender.
+      - PHP_SENDMAIL_PATH="/usr/sbin/ssmtp -t"
+      ## SMTP server configruation: "domain:port" | "mail" server domain is mailhog name.
+      - PHP_SENDMAIL_DOMAIN=mail:1025
+    #working_dir: /var/www
+  mysql:
+    image: thinlt/mysql:5.6
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data/database:/var/lib/mysql
+      ## Custom setup for MySQL
+      #- ./config/mysql/my.cnf:/etc/mysql/my.cnf
+    environment:
+      #- MYSQL_RANDOM_ROOT_PASSWORD=yes
+      ## change these infomations
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=
+      - MYSQL_USER=
+      - MYSQL_PASSWORD=
+  redis:
+    # keopx/redis available tags: latest, 3.2, 3.0
+    image: thinlt/redis:3.2
+    ports:
+      - "6379:6379"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    links:
+      - mysql
+    environment:
+      - PMA_HOST=mysql
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+  
