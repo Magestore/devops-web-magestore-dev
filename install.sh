@@ -109,9 +109,19 @@ db_user_pass=$(randpw)
 newrootpass=$(randpw)
 
 ## Import database
+container_id_mysql=$( docker ps --filter=ancestor=thinlt/mysql:5.6 ) # get container id
+
+echo "Copy database files to mysql container:"
+docker cp magestore_db.sql ${container_id_mysql}:/tmp/magestore_db.sql
+docker cp magestore_db_customer.sql ${container_id_mysql}:/tmp/magestore_db_customer.sql
+
 echo "Importing database:"
-mysql -u root -p'' ${db_name} < magestore_db.sql
-mysql -u root -p'' ${db_name} < magestore_db_customer.sql
+docker exec -it ${container_id_mysql} mysql -u root -p'' ${db_name} < /tmp/magestore_db.sql
+docker exec -it ${container_id_mysql} mysql -u root -p'' ${db_name} < /tmp/magestore_db_customer.sql
+
+echo "Delete sql files in mysql container:"
+docker exec -it ${container_id_mysql} rm /tmp/magestore_db.sql
+docker exec -it ${container_id_mysql} rm /tmp/magestore_db_customer.sql
 
 echo "Delete file magestore_db.sql"
 rm magestore_db.sql
