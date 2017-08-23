@@ -107,6 +107,8 @@ chown mysql:mysql data/database
 echo "Run docker-compose:"
 docker-compose up -d
 
+sleep 10
+
 ## Import db
 db_name="magestore_live"
 db_user="magestore"
