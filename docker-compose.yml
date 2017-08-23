@@ -28,10 +28,9 @@ services:
       - ./config/nginx:/etc/nginx/conf.d
       - ./config/nginx/ssl:/etc/nginx/ssl
     
-    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/default_ssl_temp.conf.template > /etc/nginx/conf.d/default_ssl_temp.conf && nginx -g 'daemon off;'"
+    #command: /bin/bash -c "envsubst < /etc/nginx/conf.d/default_ssl_temp.conf.template > /etc/nginx/conf.d/default_ssl_temp.conf && nginx -g 'daemon off;'"
     links:
       - varnish
-    
   apache-php:
     # thinlt/apache-php available tags: latest, 7.2, 5.6.
     image: thinlt/apache-php:5.6
