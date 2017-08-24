@@ -29,13 +29,13 @@ read DOMAIN
 ## Install
 echo "Installing"
 
-#echo "Pull source code from git source, enter github username & password:"
+echo "Pull source code from git source, enter github username & password:"
 ## clear data/www/
-#echo "clearning data/www/*"
-#rm -rf data/www
-#mkdir -p data/www
-#git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www
-#rm -rf data/www/.git # remove git info
+echo "clearning data/www/*"
+rm -rf data/www
+mkdir -p data/www
+git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www
+rm -rf data/www/.git # remove git info
 
 ## create function
 randpw(){ < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-16};echo;}
@@ -53,12 +53,13 @@ echo "Pull database, enter root password:"
 echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
 --no-data \
 ${EXPORT_DB_NAME} > magestore_db_schema.sql"
-
 mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
 --no-data \
 ${EXPORT_DB_NAME} > magestore_db_schema.sql
 
 echo "pull database data"
+echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+--no-create-db --no-create-info ..."
 mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
 --no-create-db --no-create-info \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_fulltext \
