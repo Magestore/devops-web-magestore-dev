@@ -106,7 +106,6 @@ mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt 
 --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_yearly \
 --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_index \
 ${EXPORT_DB_NAME} > magestore_db_data.sql
-exit
 
 echo "create media dir:"
 mkdir -p data/www/media
