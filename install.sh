@@ -5,17 +5,22 @@
 EXPORT_DB_HOST='35.202.178.130'
 EXPORT_DB_NAME='magestore_db_clone'
 EXPORT_USER='root'
+EXPORT_PASS='Buu0JDFL0Hxa6nI0'
 
 ## read cloud sql root password
 echo "Clone database from host(${EXPORT_DB_HOST}):"
-read EXPORT_DB_HOST
+read DB_HOST
 echo "Clone database from db_name(${EXPORT_DB_NAME}):"
-read EXPORT_DB_NAME
+read DB_NAME
 echo "Clone database from user(${EXPORT_USER}):"
-read EXPORT_USER
+read USER
 echo "Clone database from pass:"
-read EXPORT_PASS
-EXPORT_PASS=${EXPORT_PASS:-Buu0JDFL0Hxa6nI0}
+read PASS
+
+EXPORT_DB_HOST=${DB_HOST:-$EXPORT_DB_HOST}
+EXPORT_DB_NAME=${DB_NAME:-$EXPORT_DB_NAME}
+EXPORT_USER=${USER:-$EXPORT_USER}
+EXPORT_PASS=${PASS:-$EXPORT_PASS}
 
 ## read new domain to install
 echo "Enter new domain to install (https://..):"
@@ -24,13 +29,13 @@ read DOMAIN
 ## Install
 echo "Installing"
 
-echo "Pull source code from git source, enter github username & password:"
+#echo "Pull source code from git source, enter github username & password:"
 ## clear data/www/
-echo "clearning data/www/*"
-rm -rf data/www
-mkdir -p data/www
-git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www
-rm -rf data/www/.git # remove git info
+#echo "clearning data/www/*"
+#rm -rf data/www
+#mkdir -p data/www
+#git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www
+#rm -rf data/www/.git # remove git info
 
 ## create function
 randpw(){ < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-16};echo;}
@@ -100,6 +105,7 @@ mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt 
 --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_yearly \
 --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_index \
 ${EXPORT_DB_NAME} > magestore_db_data.sql
+exit
 
 echo "create media dir:"
 mkdir -p data/www/media
