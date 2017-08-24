@@ -145,9 +145,9 @@ docker exec -it ${container_id_mysql} rm /tmp/magestore_db.sql
 docker exec -it ${container_id_mysql} rm /tmp/magestore_db_customer.sql
 
 echo "Delete file magestore_db.sql"
-rm magestore_db.sql
+rm magestore_db_schema.sql
 echo "Delete file magestore_db_customer.sql"
-rm magestore_db_customer.sql
+rm magestore_db_data.sql
 
 ## create database user
 echo "create user \`${db_user}\` access database:"
