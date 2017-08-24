@@ -150,13 +150,17 @@ echo "Copy database files to mysql container:"
 counter=0
 while true ; do
   let counter+=1
-  CHECK_STATUS=$( docker ps --filter=ancestor=thinlt/mysql:5.6 | grep thinlt/mysql:5.6 | grep "(healthy)" | wc -l )
+  CHECK_STATUS=$( docker ps --filter=ancestor=thinlt/mysql:5.6 | grep "(healthy)" | wc -l )
   if [ $CHECK_STATUS -ne 1 ]; then
     sleep 10
   else
+    echo "docker mysql container status:"
+    docker ps --filter=ancestor=thinlt/mysql:5.6 | grep "(healthy)"
     break
   fi
   if [ $counter -gt 100 ]; then
+    echo "docker mysql container status:"
+    docker ps --filter=ancestor=thinlt/mysql:5.6 | grep "(healthy)"
     break
   fi
 done
