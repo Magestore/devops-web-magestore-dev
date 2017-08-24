@@ -175,6 +175,12 @@ while true ; do
     docker ps --filter=ancestor=thinlt/mysql:5.6 | grep "(healthy)"
     break
   fi
+  ## try to restart docker-compose
+  let counter_docker=$counter%10
+  if [ $counter_docker -eq 0 ]; then
+    echo "restart docker-compose"
+    docker-compose restart
+  fi
 done
 
 echo "Importing database:"
