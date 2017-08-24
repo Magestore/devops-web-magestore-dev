@@ -34,6 +34,12 @@ DATE_TIME=$( date -u "+${DATE_TIME}-${DATE_MONTH}-%d %H:%M:%S" ) # compile all t
 ## Export database with ignored tables
 echo "Pull database, enter root password:"
 mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+--no-data \
+${EXPORT_DB_NAME} > magestore_db_schema.sql
+
+echo "pull database data"
+mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+--no-create-db --no-create-info \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_fulltext \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_query    \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_result   \
@@ -77,25 +83,14 @@ mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --singl
 --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_monthly \
 --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_yearly \
 --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_index \
-${EXPORT_DB_NAME} > magestore_db.sql
+${EXPORT_DB_NAME} > magestore_db_data.sql
 
-## Export customer schema
-mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --single-transaction --no-data --quick --set-gtid-purged=OFF \
---where="created_at < '${DATE_TIME}'" \
-${EXPORT_DB_NAME} \
-customer_address_entity \
-customer_address_entity_datetime \
-customer_address_entity_decimal \
-customer_address_entity_int \
-customer_address_entity_text \
-customer_address_entity_varchar \
-customer_entity \
-customer_entity_datetime \
-customer_entity_decimal \
-customer_entity_int \
-customer_entity_text \
-customer_entity_varchar \
-> magestore_db_customer.sql
+echo "create media dir:"
+mkdir -p data/www/media
+chown -R www-data:www-data data/www/media
+
+echo "clear var/"
+rm -rf data/www/var/*
 
 echo "chown data/www:"
 chown www-data:www-data data/www
@@ -123,8 +118,8 @@ docker cp magestore_db.sql ${container_id_mysql}:/tmp/magestore_db.sql
 docker cp magestore_db_customer.sql ${container_id_mysql}:/tmp/magestore_db_customer.sql
 
 echo "Importing database:"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db.sql"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_customer.sql"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_schema.sql"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_data.sql"
 
 echo "delete Customer in database container:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"DELETE FROM customer_entity WHERE created_at < '{DATE_TIME}'\" ${db_name}"
@@ -147,6 +142,12 @@ docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "GRANT ALL ON ${
 
 echo "change new root password:"
 docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${newrootpass}')"
+
+## replace database account info
+sed 's/<host>.*<\/host>/<host><!\[CDATA\[mysql\]\]><\/host>/' app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > app/etc/local.xml
+sed 's/<username>.*<\/username>/<username><!\[CDATA\['${db_user}'\]\]><\/username>/' app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > app/etc/local.xml
+sed 's/<password>.*<\/password>/<password><!\[CDATA\['${db_user_pass}'\]\]><\/password>/' app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > app/etc/local.xml
+sed 's/<dbname>.*<\/dbname>/<dbname><!\[CDATA['${db_name}'\]\]><\/dbname>/' app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > app/etc/local.xml
 
 echo "#################"
 echo "---Info---"
