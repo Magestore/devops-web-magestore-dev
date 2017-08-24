@@ -117,10 +117,10 @@ echo "clear var/"
 rm -rf data/www/var/*
 
 echo "chown data/www:"
-chown www-data:www-data data/www
+chown -R www-data:www-data data/www
 
 echo "chown data/database:"
-chown mysql:mysql data/database
+chown -R mysql:mysql data/database
 
 ## Run docker-compose
 echo "Run docker-compose:"
