@@ -183,8 +183,8 @@ echo "Importing database:"
 #  mysql -u root -p'root' --host= ${db_name} < magestore_db_schema.sql
 #  mysql -u root -p'root' --host= ${db_name} < magestore_db_data.sql
 #fi
-cat magestore_db_schema.sql | docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < cat - "
-cat magestore_db_data.sql | docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < cat - "
+cat magestore_db_schema.sql | docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name}"
+cat magestore_db_data.sql | docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name}"
 #docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_schema.sql"
 #docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_data.sql"
 
