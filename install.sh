@@ -123,6 +123,9 @@ rm -rf data/www/var/*
 echo "chown data/www:"
 chown -R www-data:www-data data/www
 
+echo "clear data/database:"
+rm -rf data/database/*
+
 echo "chown data/database:"
 chown -R mysql:mysql data/database
 
