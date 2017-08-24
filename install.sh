@@ -151,6 +151,7 @@ counter=0
 while true ; do
   let counter+=1
   CHECK_STATUS=$( docker ps --filter=ancestor=thinlt/mysql:5.6 | grep "(healthy)" | wc -l )
+  echo "Waiting for container ${container_id_mysql} (mysql:5.6)'s healthy status: ${CHECK_STATUS}"
   if [ $CHECK_STATUS -ne 1 ]; then
     sleep 10
   else
