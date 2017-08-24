@@ -142,12 +142,14 @@ newrootpass=$(randpw)
 container_id_mysql=$( docker ps -q --filter=ancestor=thinlt/mysql:5.6 ) # get container id
 
 echo "Copy database files to mysql container:"
-docker cp magestore_db_schema.sql ${container_id_mysql}:/tmp/magestore_db_schema.sql
-docker cp magestore_db_data.sql ${container_id_mysql}:/tmp/magestore_db_data.sql
+#docker cp magestore_db_schema.sql ${container_id_mysql}:/tmp/magestore_db_schema.sql
+#docker cp magestore_db_data.sql ${container_id_mysql}:/tmp/magestore_db_data.sql
 
 echo "Importing database:"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_schema.sql"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_data.sql"
+#docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_schema.sql"
+#docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_data.sql"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name}" < magestore_db_schema.sql
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name}" < magestore_db_data.sql
 
 echo "delete Customer in database container:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"DELETE FROM customer_entity WHERE created_at < '{DATE_TIME}'\" ${db_name}"
