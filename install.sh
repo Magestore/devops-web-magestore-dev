@@ -1,14 +1,21 @@
 #!/bin/bash
 
 ## Define vars
-### Cloud SQL Database
+### Clone from Cloud SQL Database
 EXPORT_DB_HOST='35.202.178.130'
 EXPORT_DB_NAME='magestore_db_clone'
+EXPORT_USER='root'
 
 ## read cloud sql root password
-echo "Enter cloud sql (${EXPORT_DB_HOST}) root pass:"
-read CLOUDSQL_ROOT_PASS
-
+echo "Clone database from host(${EXPORT_DB_HOST}):"
+read EXPORT_DB_HOST
+echo "Clone database from db_name(${EXPORT_DB_NAME}):"
+read EXPORT_DB_NAME
+echo "Clone database from user(${EXPORT_USER}):"
+read EXPORT_USER
+echo "Clone database from pass:"
+read EXPORT_PASS
+EXPORT_PASS=${EXPORT_PASS:-Buu0JDFL0Hxa6nI0}
 ## Install
 echo "Installing"
 
@@ -33,12 +40,12 @@ DATE_TIME=$( date -u "+${DATE_TIME}-${DATE_MONTH}-%d %H:%M:%S" ) # compile all t
 
 ## Export database with ignored tables
 echo "Pull database, enter root password:"
-mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+mysqldump --host=${EXPORT_DB_HOST} -u ${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
 --no-data \
 ${EXPORT_DB_NAME} > magestore_db_schema.sql
 
 echo "pull database data"
-mysqldump --host=${EXPORT_DB_HOST} -u root -p${CLOUDSQL_ROOT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+mysqldump --host=${EXPORT_DB_HOST} -u ${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
 --no-create-db --no-create-info \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_fulltext \
 --ignore-table=${EXPORT_DB_NAME}.catalogsearch_query    \
