@@ -59,61 +59,69 @@ PULL_DATABASE=false
 if [ $PULL_DATABASE ]; then
   echo "Pull database for schema, enter root password:"
   echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
-  --no-data \
-  ${EXPORT_DB_NAME} > magestore_db_schema.sql"
-  mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
-  --no-data \
-  ${EXPORT_DB_NAME} > magestore_db_schema.sql
+  --no-data ${EXPORT_DB_NAME} > magestore_db_schema.sql"
+  if [ ! -f "magestore_db_schema.sql" ]; then
+    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction 
+      --quick --set-gtid-purged=OFF \
+      --no-data \
+    ${EXPORT_DB_NAME} > magestore_db_schema.sql
+  else
+    echo "Use magestore_db_schema.sql from cached"
+  fi
 
   echo "Pull database for data:"
   echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
   --no-create-db --no-create-info ..."
-  mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
-  --no-create-db --no-create-info \
-  --ignore-table=${EXPORT_DB_NAME}.catalogsearch_fulltext \
-  --ignore-table=${EXPORT_DB_NAME}.catalogsearch_query    \
-  --ignore-table=${EXPORT_DB_NAME}.catalogsearch_result   \
-  --ignore-table=${EXPORT_DB_NAME}.core_session \
-  --ignore-table=${EXPORT_DB_NAME}.customer_address_entity          \
-  --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_datetime \
-  --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_decimal  \
-  --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_int      \
-  --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_text     \
-  --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_varchar  \
-  --ignore-table=${EXPORT_DB_NAME}.customer_eav_attribute           \
-  --ignore-table=${EXPORT_DB_NAME}.customer_eav_attribute_website   \
-  --ignore-table=${EXPORT_DB_NAME}.customer_entity                  \
-  --ignore-table=${EXPORT_DB_NAME}.customer_entity_datetime         \
-  --ignore-table=${EXPORT_DB_NAME}.customer_entity_decimal          \
-  --ignore-table=${EXPORT_DB_NAME}.customer_entity_int              \
-  --ignore-table=${EXPORT_DB_NAME}.customer_entity_text             \
-  --ignore-table=${EXPORT_DB_NAME}.customer_entity_varchar          \
-  --ignore-table=${EXPORT_DB_NAME}.customer_flowpassword            \
-  --ignore-table=${EXPORT_DB_NAME}.customer_form_attribute          \
-  --ignore-table=${EXPORT_DB_NAME}.customer_group                   \
-  --ignore-table=${EXPORT_DB_NAME}.dataflow_batch \
-  --ignore-table=${EXPORT_DB_NAME}.dataflow_batch_export \
-  --ignore-table=${EXPORT_DB_NAME}.dataflow_batch_import \
-  --ignore-table=${EXPORT_DB_NAME}.dataflow_import_data \
-  --ignore-table=${EXPORT_DB_NAME}.dataflow_session \
-  --ignore-table=${EXPORT_DB_NAME}.log_url \
-  --ignore-table=${EXPORT_DB_NAME}.log_url_info \
-  --ignore-table=${EXPORT_DB_NAME}.log_visitor \
-  --ignore-table=${EXPORT_DB_NAME}.log_visitor_info \
-  --ignore-table=${EXPORT_DB_NAME}.log_visitor_online \
-  --ignore-table=${EXPORT_DB_NAME}.newsletter_problem \
-  --ignore-table=${EXPORT_DB_NAME}.newsletter_queue \
-  --ignore-table=${EXPORT_DB_NAME}.newsletter_queue_link \
-  --ignore-table=${EXPORT_DB_NAME}.newsletter_queue_store_link \
-  --ignore-table=${EXPORT_DB_NAME}.newsletter_subscriber \
-  --ignore-table=${EXPORT_DB_NAME}.newsletter_template \
-  --ignore-table=${EXPORT_DB_NAME}.report_compared_product_index \
-  --ignore-table=${EXPORT_DB_NAME}.report_event \
-  --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_daily \
-  --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_monthly \
-  --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_yearly \
-  --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_index \
-  ${EXPORT_DB_NAME} > magestore_db_data.sql
+  if [ ! -f "magestore_db_data.sql" ]; then
+    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+      --no-create-db --no-create-info \
+      --ignore-table=${EXPORT_DB_NAME}.catalogsearch_fulltext \
+      --ignore-table=${EXPORT_DB_NAME}.catalogsearch_query    \
+      --ignore-table=${EXPORT_DB_NAME}.catalogsearch_result   \
+      --ignore-table=${EXPORT_DB_NAME}.core_session \
+      --ignore-table=${EXPORT_DB_NAME}.customer_address_entity          \
+      --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_datetime \
+      --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_decimal  \
+      --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_int      \
+      --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_text     \
+      --ignore-table=${EXPORT_DB_NAME}.customer_address_entity_varchar  \
+      --ignore-table=${EXPORT_DB_NAME}.customer_eav_attribute           \
+      --ignore-table=${EXPORT_DB_NAME}.customer_eav_attribute_website   \
+      --ignore-table=${EXPORT_DB_NAME}.customer_entity                  \
+      --ignore-table=${EXPORT_DB_NAME}.customer_entity_datetime         \
+      --ignore-table=${EXPORT_DB_NAME}.customer_entity_decimal          \
+      --ignore-table=${EXPORT_DB_NAME}.customer_entity_int              \
+      --ignore-table=${EXPORT_DB_NAME}.customer_entity_text             \
+      --ignore-table=${EXPORT_DB_NAME}.customer_entity_varchar          \
+      --ignore-table=${EXPORT_DB_NAME}.customer_flowpassword            \
+      --ignore-table=${EXPORT_DB_NAME}.customer_form_attribute          \
+      --ignore-table=${EXPORT_DB_NAME}.customer_group                   \
+      --ignore-table=${EXPORT_DB_NAME}.dataflow_batch \
+      --ignore-table=${EXPORT_DB_NAME}.dataflow_batch_export \
+      --ignore-table=${EXPORT_DB_NAME}.dataflow_batch_import \
+      --ignore-table=${EXPORT_DB_NAME}.dataflow_import_data \
+      --ignore-table=${EXPORT_DB_NAME}.dataflow_session \
+      --ignore-table=${EXPORT_DB_NAME}.log_url \
+      --ignore-table=${EXPORT_DB_NAME}.log_url_info \
+      --ignore-table=${EXPORT_DB_NAME}.log_visitor \
+      --ignore-table=${EXPORT_DB_NAME}.log_visitor_info \
+      --ignore-table=${EXPORT_DB_NAME}.log_visitor_online \
+      --ignore-table=${EXPORT_DB_NAME}.newsletter_problem \
+      --ignore-table=${EXPORT_DB_NAME}.newsletter_queue \
+      --ignore-table=${EXPORT_DB_NAME}.newsletter_queue_link \
+      --ignore-table=${EXPORT_DB_NAME}.newsletter_queue_store_link \
+      --ignore-table=${EXPORT_DB_NAME}.newsletter_subscriber \
+      --ignore-table=${EXPORT_DB_NAME}.newsletter_template \
+      --ignore-table=${EXPORT_DB_NAME}.report_compared_product_index \
+      --ignore-table=${EXPORT_DB_NAME}.report_event \
+      --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_daily \
+      --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_monthly \
+      --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_yearly \
+      --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_index \
+      ${EXPORT_DB_NAME} > magestore_db_data.sql
+    else
+      echo "Use magestore_db_data.sql from cached"
+    fi
 fi
 
 echo "create media dir:"
