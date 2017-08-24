@@ -178,10 +178,10 @@ echo "change new root password:"
 docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${newrootpass}')"
 
 ## replace database account info
-sed 's/<host>.*<\/host>/<host><!\[CDATA\[mysql\]\]><\/host>/' app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > app/etc/local.xml
-sed 's/<username>.*<\/username>/<username><!\[CDATA\['${db_user}'\]\]><\/username>/' app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > app/etc/local.xml
-sed 's/<password>.*<\/password>/<password><!\[CDATA\['${db_user_pass}'\]\]><\/password>/' app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > app/etc/local.xml
-sed 's/<dbname>.*<\/dbname>/<dbname><!\[CDATA['${db_name}'\]\]><\/dbname>/' app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > app/etc/local.xml
+sed 's/<host>.*<\/host>/<host><!\[CDATA\[mysql\]\]><\/host>/' data/www/app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > data/www/app/etc/local.xml
+sed 's/<username>.*<\/username>/<username><!\[CDATA\['${db_user}'\]\]><\/username>/' data/www/app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > data/www/app/etc/local.xml
+sed 's/<password>.*<\/password>/<password><!\[CDATA\['${db_user_pass}'\]\]><\/password>/' data/www/app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > data/www/app/etc/local.xml
+sed 's/<dbname>.*<\/dbname>/<dbname><!\[CDATA['${db_name}'\]\]><\/dbname>/' data/www/app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > data/www/app/etc/local.xml
 
 echo "#################"
 echo "---Info---"
