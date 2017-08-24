@@ -55,7 +55,9 @@ fi
 DATE_TIME=$( date -u "+${DATE_TIME}-${DATE_MONTH}-%d %H:%M:%S" ) # compile all together
 
 ## Export database with ignored tables
-echo "Pull database, enter root password:"
+PULL_DATABASE=true
+if [ $PULL_DATABASE is true ]; then
+echo "Pull database for schema, enter root password:"
 echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
 --no-data \
 ${EXPORT_DB_NAME} > magestore_db_schema.sql"
@@ -63,7 +65,7 @@ mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt 
 --no-data \
 ${EXPORT_DB_NAME} > magestore_db_schema.sql
 
-echo "pull database data"
+echo "Pull database for data:"
 echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
 --no-create-db --no-create-info ..."
 mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
@@ -112,6 +114,7 @@ mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt 
 --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_yearly \
 --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_index \
 ${EXPORT_DB_NAME} > magestore_db_data.sql
+fi
 
 echo "create media dir:"
 mkdir -p data/www/media
