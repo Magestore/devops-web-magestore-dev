@@ -159,6 +159,7 @@ echo "Copy database files to mysql container:"
 
 ## wait for mysql status healthy
 counter=0
+docker_compose_check=0
 while true ; do
   let counter+=1
   CHECK_STATUS=$( docker ps --filter=ancestor=thinlt/mysql:5.6 | grep "(healthy)" | wc -l )
@@ -168,6 +169,7 @@ while true ; do
   else
     echo "docker mysql container status:"
     docker ps --filter=ancestor=thinlt/mysql:5.6 | grep "(healthy)"
+    let docker_compose_check+=1
     break
   fi
   if [ $counter -gt 100 ]; then
@@ -175,9 +177,9 @@ while true ; do
     docker ps --filter=ancestor=thinlt/mysql:5.6 | grep "(healthy)"
     break
   fi
-  ## try to restart docker-compose
-  let counter_docker=$counter%10
-  if [ $counter_docker -eq 0 ]; then
+  ## try to restart docker-compos
+  if [ $docker_compose_check -le 3 ]; then
+    docker_compose_check=0
     echo "restart docker-compose"
     docker-compose restart
   fi
