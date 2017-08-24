@@ -38,10 +38,9 @@ mkdir -p data/www
 git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www
 rm -rf data/www/.git # remove git info
 ## create local.xml file
-if [ -f "data/www/app/etc/local.xml.template" ]; then
+mv local.xml.bak data/www/app/etc/local.xml # restore local.xml file
+if [ ! -f "data/www/app/etc/local.xml" ]; then
   mv data/www/app/etc/local.xml.template data/www/app/etc/local.xml
-else
-  mv local.xml.bak data/www/app/etc/local.xml # restore local.xml file
 fi
 
 ## create function
