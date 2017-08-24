@@ -45,6 +45,10 @@ DATE_TIME=$( date -u "+${DATE_TIME}-${DATE_MONTH}-%d %H:%M:%S" ) # compile all t
 
 ## Export database with ignored tables
 echo "Pull database, enter root password:"
+echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+--no-data \
+${EXPORT_DB_NAME} > magestore_db_schema.sql"
+
 mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
 --no-data \
 ${EXPORT_DB_NAME} > magestore_db_schema.sql
