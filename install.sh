@@ -151,12 +151,12 @@ docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"
   SET \`value\` = '${DOMAIN}' WHERE \`path\` LIKE '%base_url%' \" ${db_name}"
 
 echo "Delete sql files in mysql container:"
-docker exec -it ${container_id_mysql} rm /tmp/magestore_db.sql
-docker exec -it ${container_id_mysql} rm /tmp/magestore_db_customer.sql
+docker exec -it ${container_id_mysql} rm /tmp/magestore_db_schema.sql
+docker exec -it ${container_id_mysql} rm /tmp/magestore_db_data.sql
 
-echo "Delete file magestore_db.sql"
+echo "Delete file magestore_db_schema.sql"
 rm magestore_db_schema.sql
-echo "Delete file magestore_db_customer.sql"
+echo "Delete file magestore_db_data.sql"
 rm magestore_db_data.sql
 
 ## create database user
