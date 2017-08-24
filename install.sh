@@ -133,8 +133,6 @@ chown -R mysql:mysql data/database
 echo "Run docker-compose:"
 docker-compose up -d
 
-sleep 10
-
 ## Import db
 db_name="magestore_live"
 db_user="magestore"
@@ -147,6 +145,21 @@ container_id_mysql=$( docker ps -q --filter=ancestor=thinlt/mysql:5.6 ) # get co
 echo "Copy database files to mysql container:"
 #docker cp magestore_db_schema.sql ${container_id_mysql}:/tmp/magestore_db_schema.sql
 #docker cp magestore_db_data.sql ${container_id_mysql}:/tmp/magestore_db_data.sql
+
+## wait for mysql status healthy
+counter=0
+while true ; do
+  let counter+=1
+  CHECK_STATUS=$( docker ps --filter=ancestor=thinlt/mysql:5.6 | grep thinlt/mysql:5.6 | grep "(healthy)" | wc -l )
+  if [ $CHECK_STATUS -ne 1 ]; then
+    sleep 10
+  else
+    break
+  fi
+  if [ $counter -gt 100 ]; then
+    break
+  fi
+done
 
 echo "Importing database:"
 #docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_schema.sql"
