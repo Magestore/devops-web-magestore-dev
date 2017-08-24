@@ -46,6 +46,7 @@ services:
       ## Data.
       - ./data/www:/var/www
       - ./config/vhosts:/etc/apache2/sites-enabled
+      - ./config/apache/conf-enabled:/etc/apache2/conf-enabled
       ## php.ini for php 5.6
       #- ./config/php/5.6/php.ini:/etc/php/5.6/cli/php.ini
       ## php.ini for php 7.x and remove environment varibles.
