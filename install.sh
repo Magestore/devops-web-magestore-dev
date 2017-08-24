@@ -32,13 +32,13 @@ echo "Installing"
 echo "Pull source code from git source, enter github username & password:"
 ## clear data/www/
 echo "clearning data/www/*"
-#mv data/www/app/etc/local.xml local.xml.bak # backup local file
-#rm -rf data/www
-#mkdir -p data/www
-#git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www
-#rm -rf data/www/.git # remove git info
+mv data/www/app/etc/local.xml local.xml.bak # backup local file
+rm -rf data/www
+mkdir -p data/www
+git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www
+rm -rf data/www/.git # remove git info
 ## create local.xml file
-#mv local.xml.bak data/www/app/etc/local.xml # restore local.xml file
+mv local.xml.bak data/www/app/etc/local.xml # restore local.xml file
 if [ ! -f "data/www/app/etc/local.xml" ]; then
   mv data/www/app/etc/local.xml.template data/www/app/etc/local.xml
 fi
