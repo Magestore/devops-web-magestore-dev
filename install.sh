@@ -178,14 +178,14 @@ echo "change domain:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"UPDATE core_config_data \
   SET value = '${DOMAIN}' WHERE path LIKE '%base_url%' \" ${db_name}"
 
+## Clean files
 echo "Delete sql files in mysql container:"
-docker exec -it ${container_id_mysql} rm /tmp/magestore_db_schema.sql
-docker exec -it ${container_id_mysql} rm /tmp/magestore_db_data.sql
-
+#docker exec -it ${container_id_mysql} rm /tmp/magestore_db_schema.sql
+#docker exec -it ${container_id_mysql} rm /tmp/magestore_db_data.sql
 echo "Delete file magestore_db_schema.sql"
-rm magestore_db_schema.sql
+#rm magestore_db_schema.sql
 echo "Delete file magestore_db_data.sql"
-rm magestore_db_data.sql
+#rm magestore_db_data.sql
 
 ## create database user
 echo "create user \`${db_user}\` access database:"
