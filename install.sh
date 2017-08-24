@@ -136,8 +136,8 @@ newrootpass=$(randpw)
 container_id_mysql=$( docker ps -q --filter=ancestor=thinlt/mysql:5.6 ) # get container id
 
 echo "Copy database files to mysql container:"
-docker cp magestore_db.sql ${container_id_mysql}:/tmp/magestore_db.sql
-docker cp magestore_db_customer.sql ${container_id_mysql}:/tmp/magestore_db_customer.sql
+docker cp magestore_db_schema.sql ${container_id_mysql}:/tmp/magestore_db_schema.sql
+docker cp magestore_db_data.sql ${container_id_mysql}:/tmp/magestore_db_data.sql
 
 echo "Importing database:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_schema.sql"
