@@ -177,6 +177,17 @@ newrootpass=$(randpw)
 ## get Import database container id
 container_id_mysql=$( docker ps -q --filter=ancestor=thinlt/mysql:5.6 ) # get container id
 
+## create client user/password to file.cnf
+mysql_login_info=$( cat <<EOF
+[client]
+host     = localhost
+user     = root
+password = root
+EOF
+)
+docker exec -it ${container_id_mysql} /bin/bash -c "echo ${mysql_login_info} > mysql_login_info.cnf"
+
+
 ## mysql file imported in /var/lib/mysql and do not need copy
 #echo "Copy database files to mysql container:"
 #docker cp magestore_db_schema.sql ${container_id_mysql}:/tmp/magestore_db_schema.sql
@@ -211,21 +222,21 @@ while true ; do
 done
 
 echo "Importing database:"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /var/lib/mysql/magestore_db_schema.sql"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /var/lib/mysql/magestore_db_data.sql"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf ${db_name} < /var/lib/mysql/magestore_db_schema.sql"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf ${db_name} < /var/lib/mysql/magestore_db_data.sql"
 echo "Delete sql files"
 docker exec -it ${container_id_mysql} rm /var/lib/mysql/magestore_db_schema.sql /var/lib/mysql/magestore_db_data.sql
 
 echo "delete Customer in database container:"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"DELETE FROM customer_entity WHERE created_at < '{DATE_TIME}'\" ${db_name}"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"DELETE FROM customer_entity WHERE created_at < '{DATE_TIME}'\" ${db_name}"
 
 echo "change domain:"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"UPDATE core_config_data \
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"UPDATE core_config_data \
   SET value = '${DOMAIN}' WHERE path LIKE '%base_url%' \" ${db_name}"
 
 echo "change cookie donain/path:"
 DOMAIN_NAME=$( echo ${DOMAIN} | sed 's/https:\/\///' | sed 's/http:\/\///' | awk -F'/' '{print $1}' )
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"UPDATE core_config_data \
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"UPDATE core_config_data \
   SET value = '${DOMAIN_NAME}' WHERE path = 'web/cookie/cookie_domain' \" ${db_name}"
 
 ## Clean files
@@ -240,13 +251,13 @@ docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"
 
 ## create database user
 echo "create user \`${db_user}\` access database:"
-#docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "CREATE USER IF NOT EXISTS ${db_user}" # mysql > 5.7
-docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "CREATE USER ${db_user}" # mysql < 5.6
-docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "SET PASSWORD FOR '${db_user}'@'%' = PASSWORD('${db_user_pass}')"
-docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "GRANT ALL ON ${db_name}.* TO '${db_user}'@'%'"
+#docker exec -it ${container_id_mysql} mysql --defaults-extra-file=mysql_login_info.cnf -e "CREATE USER IF NOT EXISTS ${db_user}" # mysql > 5.7
+docker exec -it ${container_id_mysql} mysql --defaults-extra-file=mysql_login_info.cnf -e "CREATE USER ${db_user}" # mysql < 5.6
+docker exec -it ${container_id_mysql} mysql --defaults-extra-file=mysql_login_info.cnf -e "SET PASSWORD FOR '${db_user}'@'%' = PASSWORD('${db_user_pass}')"
+docker exec -it ${container_id_mysql} mysql --defaults-extra-file=mysql_login_info.cnf -e "GRANT ALL ON ${db_name}.* TO '${db_user}'@'%'"
 
 echo "change new root password:"
-docker exec -it ${container_id_mysql} mysql -u root -p'root' -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${newrootpass}')"
+docker exec -it ${container_id_mysql} mysql --defaults-extra-file=mysql_login_info.cnf -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('${newrootpass}')"
 
 ## replace database account info
 sed 's/<host>.*<\/host>/<host><!\[CDATA\[mysql\]\]><\/host>/' data/www/app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > data/www/app/etc/local.xml
