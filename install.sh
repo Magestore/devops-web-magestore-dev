@@ -55,7 +55,7 @@ else
 fi
 cd $CUR_DIR
 echo "copy source to www:"
-#cp -Rf ${CUR_DIR}/data/.www/* ${CUR_DIR}/data/www/
+cp -Rf ${CUR_DIR}/data/.www/* ${CUR_DIR}/data/www/
 rm -rf data/www/.git # remove git info
 ## create local.xml file
 mv local.xml.bak data/www/app/etc/local.xml # restore local.xml file
@@ -146,6 +146,8 @@ if [ "$PULL_DATABASE" == "true" ]; then
       echo "Use magestore_db_data.sql from cached"
     fi
 fi
+## clean mysql user/password file
+rm mysql_pass.cnf
 
 echo "create media dir:"
 mkdir -p data/www/media
