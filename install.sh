@@ -7,6 +7,8 @@ EXPORT_DB_NAME='magestore_db_clone'
 EXPORT_USER='root'
 EXPORT_PASS='Buu0JDFL0Hxa6nI0'
 
+CUR_DIR=$( pwd )
+
 ## read cloud sql root password
 echo "Clone database from host(${EXPORT_DB_HOST}):"
 read DB_HOST
@@ -33,7 +35,7 @@ echo "Pull source code from git source, enter github username & password:"
 ## clear data/www/
 echo "clearning data/www/*"
 mv data/www/app/etc/local.xml local.xml.bak # backup local file
-rm -rf data/www
+#rm -rf data/www
 mkdir -p data/www
 if [ ! -d "data/.www/.git" ]; then
   echo "Cloning source:"
@@ -43,6 +45,7 @@ else
   echo "Load source from cached"
   cd data/.www && git pull
 fi
+cd $CUR_DIR
 rsync -aAh data/.www data/www
 rm -rf data/www/.git # remove git info
 ## create local.xml file
