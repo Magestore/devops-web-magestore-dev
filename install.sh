@@ -67,24 +67,27 @@ DATE_TIME=$( date -u "+${DATE_TIME}-${DATE_MONTH}-%d %H:%M:%S" ) # compile all t
 
 ## Export database with ignored tables
 PULL_DATABASE=false
-if [ $PULL_DATABASE ]; then
+if [ "$PULL_DATABASE" == "true" ]; then
   echo "Pull database for schema, enter root password:"
-  echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+  
+  echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password='${EXPORT_PASS}' --opt --single-transaction --quick --set-gtid-purged=OFF \
   --no-data ${EXPORT_DB_NAME} > magestore_db_schema.sql"
+  
   if [ ! -f "magestore_db_schema.sql" ]; then
-    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction 
-      --quick --set-gtid-purged=OFF \
-      --no-data \
+    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password='${EXPORT_PASS}' --opt --single-transaction \
+      --quick --set-gtid-purged=OFF --no-data \
     ${EXPORT_DB_NAME} > magestore_db_schema.sql
   else
     echo "Use magestore_db_schema.sql from cached"
   fi
 
   echo "Pull database for data:"
-  echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+  
+  echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password='${EXPORT_PASS}' --opt --single-transaction --quick --set-gtid-purged=OFF \
   --no-create-db --no-create-info ..."
+  
   if [ ! -f "magestore_db_data.sql" ]; then
-    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
+    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password='${EXPORT_PASS}' --opt --single-transaction --quick --set-gtid-purged=OFF \
       --no-create-db --no-create-info \
       --ignore-table=${EXPORT_DB_NAME}.catalogsearch_fulltext \
       --ignore-table=${EXPORT_DB_NAME}.catalogsearch_query    \
