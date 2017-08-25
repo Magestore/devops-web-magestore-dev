@@ -35,7 +35,15 @@ echo "clearning data/www/*"
 mv data/www/app/etc/local.xml local.xml.bak # backup local file
 rm -rf data/www
 mkdir -p data/www
-git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/www
+if [ ! -d "data/.www/.git" ]; then
+  echo "Cloning source:"
+  rm -rf data/.www
+  git clone https://github.com/Magestore/Magestore-1.9.3.2.git data/.www
+else
+  echo "Load source from cached"
+  cd data/.www && git pull
+fi
+rsync -aAh data/.www data/www
 rm -rf data/www/.git # remove git info
 ## create local.xml file
 mv local.xml.bak data/www/app/etc/local.xml # restore local.xml file
