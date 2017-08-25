@@ -174,7 +174,6 @@ while true ; do
   else
     echo "docker mysql container status:"
     docker ps --filter=ancestor=thinlt/mysql:5.6 | grep "(healthy)"
-    let docker_compose_check+=1
     break
   fi
   if [ $counter -gt 100 ]; then
@@ -188,6 +187,7 @@ while true ; do
     echo "restart docker-compose"
     docker-compose restart
   fi
+  let docker_compose_check+=1
 done
 
 echo "Importing database:"
