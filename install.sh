@@ -54,10 +54,8 @@ else
   cd data/.www && git pull
 fi
 cd $CUR_DIR
-#echo "Sync source:"
-#rsync -aA ${CUR_DIR}/data/.www/ ${CUR_DIR}/data/www/
 echo "copy source to www:"
-cp -Rf ${CUR_DIR}/data/.www/* ${CUR_DIR}/data/www/
+#cp -Rf ${CUR_DIR}/data/.www/* ${CUR_DIR}/data/www/
 rm -rf data/www/.git # remove git info
 ## create local.xml file
 mv local.xml.bak data/www/app/etc/local.xml # restore local.xml file
