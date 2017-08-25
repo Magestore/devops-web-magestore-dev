@@ -59,7 +59,7 @@ echo "copy source to www:"
 cp -Rf ${CUR_DIR}/data/.www/* ${CUR_DIR}/data/www/
 rm -rf data/www/.git # remove git info
 ## create local.xml file
-mv local.xml.bak data/www/app/etc/local.xml # restore local.xml file
+cp -f local.xml.bak data/www/app/etc/local.xml
 if [ ! -f "data/www/app/etc/local.xml" ]; then
   mv data/www/app/etc/local.xml.template data/www/app/etc/local.xml
 fi
