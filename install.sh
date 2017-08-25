@@ -82,9 +82,8 @@ if [ "$PULL_DATABASE" == "true" ]; then
   echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --no-data ..."
   
   if [ ! -f "magestore_db_schema.sql" ]; then
-    mysqldump --host=${EXPORT_DB_HOST} \
-      --defaults-extra-file=${CUR_DIR}/mysql_pass.cnf \
-      --user=${EXPORT_USER} --opt --single-transaction \
+    mysqldump --defaults-extra-file=${CUR_DIR}/mysql_pass.cnf \
+      --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --opt --single-transaction \
       --quick --set-gtid-purged=OFF --no-data \
       ${EXPORT_DB_NAME} > magestore_db_schema.sql
   else
@@ -96,9 +95,8 @@ if [ "$PULL_DATABASE" == "true" ]; then
   echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --no-create-db --no-create-info ..."
   
   if [ ! -f "magestore_db_data.sql" ]; then
-    mysqldump --host=${EXPORT_DB_HOST} \
-      --defaults-extra-file=${CUR_DIR}/mysql_pass.cnf \
-      --user=${EXPORT_USER} --opt --single-transaction --quick --set-gtid-purged=OFF \
+    mysqldump --defaults-extra-file=${CUR_DIR}/mysql_pass.cnf \
+      --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --opt --single-transaction --quick --set-gtid-purged=OFF \
       --no-create-db --no-create-info \
       --ignore-table=${EXPORT_DB_NAME}.catalogsearch_fulltext \
       --ignore-table=${EXPORT_DB_NAME}.catalogsearch_query    \
