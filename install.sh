@@ -210,6 +210,11 @@ echo "change domain:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"UPDATE core_config_data \
   SET value = '${DOMAIN}' WHERE path LIKE '%base_url%' \" ${db_name}"
 
+echo "change cookie donain/path:"
+DOMAIN_NAME=$( echo ${DOMAIN} | sed 's/https:\/\///' | sed 's/http:\/\///' | awk -F'/' '{print $1}' )
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"UPDATE core_config_data \
+  SET value = '${DOMAIN_NAME}' WHERE path = 'web/cookie/cookie_domain' \" ${db_name}"
+
 ## Clean files
 echo "Delete sql files in mysql container:"
 docker exec -it ${container_id_mysql} rm /tmp/magestore_db_schema.sql
@@ -235,7 +240,11 @@ sed 's/<username>.*<\/username>/<username><!\[CDATA\['${db_user}'\]\]><\/usernam
 sed 's/<password>.*<\/password>/<password><!\[CDATA\['${db_user_pass}'\]\]><\/password>/' data/www/app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > data/www/app/etc/local.xml
 sed 's/<dbname>.*<\/dbname>/<dbname><!\[CDATA['${db_name}'\]\]><\/dbname>/' data/www/app/etc/local.xml > /tmp/sed_local_temp.xml && cat /tmp/sed_local_temp.xml > data/www/app/etc/local.xml
 
-echo "#################"
-echo "---Info---"
-echo "Mysql root password: ${newrootpass}"
-echo "Db User: ${db_user} / ${db_user_pass}"
+cat <<EOF > info.txt
+#################
+---Info---
+Mysql root password: ${newrootpass}
+Db User: ${db_user} / ${db_user_pass}
+EOF
+
+cat info.txt
