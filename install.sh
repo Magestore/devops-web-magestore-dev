@@ -188,7 +188,7 @@ while true ; do
     break
   fi
   ## try to restart docker-compos
-  if [ $docker_compose_check -ge 3 ]; then
+  if [ $docker_compose_check -ge 4 ]; then
     docker_compose_check=0
     echo "restart docker-compose"
     docker-compose restart
