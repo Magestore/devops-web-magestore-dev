@@ -63,7 +63,7 @@ fi
 DATE_TIME=$( date -u "+${DATE_TIME}-${DATE_MONTH}-%d %H:%M:%S" ) # compile all together
 
 ## Export database with ignored tables
-PULL_DATABASE=false
+PULL_DATABASE=true
 if [ $PULL_DATABASE ]; then
   echo "Pull database for schema, enter root password:"
   echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
@@ -212,12 +212,12 @@ docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"
 
 ## Clean files
 echo "Delete sql files in mysql container:"
-#docker exec -it ${container_id_mysql} rm /tmp/magestore_db_schema.sql
-#docker exec -it ${container_id_mysql} rm /tmp/magestore_db_data.sql
+docker exec -it ${container_id_mysql} rm /tmp/magestore_db_schema.sql
+docker exec -it ${container_id_mysql} rm /tmp/magestore_db_data.sql
 echo "Delete file magestore_db_schema.sql"
-#rm magestore_db_schema.sql
+rm magestore_db_schema.sql
 echo "Delete file magestore_db_data.sql"
-#rm magestore_db_data.sql
+rm magestore_db_data.sql
 
 ## create database user
 echo "create user \`${db_user}\` access database:"
