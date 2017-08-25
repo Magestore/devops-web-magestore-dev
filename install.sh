@@ -63,7 +63,7 @@ fi
 DATE_TIME=$( date -u "+${DATE_TIME}-${DATE_MONTH}-%d %H:%M:%S" ) # compile all together
 
 ## Export database with ignored tables
-PULL_DATABASE=true
+PULL_DATABASE=false
 if [ $PULL_DATABASE ]; then
   echo "Pull database for schema, enter root password:"
   echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} -p${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
@@ -143,10 +143,7 @@ echo "chown data/www:"
 chown -R www-data:www-data data/www
 
 echo "clear data/database:"
-rm -rf data/database/*
-
-echo "chown data/database:"
-chown -R mysql:mysql data/database
+rm -rf data/database
 
 ## Run docker-compose
 echo "Run docker-compose:"
@@ -162,8 +159,8 @@ newrootpass=$(randpw)
 container_id_mysql=$( docker ps -q --filter=ancestor=thinlt/mysql:5.6 ) # get container id
 
 echo "Copy database files to mysql container:"
-docker cp magestore_db_schema.sql ${container_id_mysql}:/tmp/magestore_db_schema.sql
-docker cp magestore_db_data.sql ${container_id_mysql}:/tmp/magestore_db_data.sql
+#docker cp magestore_db_schema.sql ${container_id_mysql}:/tmp/magestore_db_schema.sql
+#docker cp magestore_db_data.sql ${container_id_mysql}:/tmp/magestore_db_data.sql
 
 ## wait for mysql status healthy
 counter=0
@@ -199,8 +196,8 @@ echo "Importing database:"
 #  mysql -u root -p'root' --host= ${db_name} < magestore_db_schema.sql
 #  mysql -u root -p'root' --host= ${db_name} < magestore_db_data.sql
 #fi
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_schema.sql"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_data.sql"
+#docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_schema.sql"
+#docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_data.sql"
 
 
 echo "delete Customer in database container:"
