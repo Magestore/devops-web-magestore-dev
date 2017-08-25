@@ -73,11 +73,11 @@ PULL_DATABASE=true
 if [ "$PULL_DATABASE" == "true" ]; then
   echo "Pull database for schema, enter root password:"
   
-  echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password='${EXPORT_PASS}' --opt --single-transaction --quick --set-gtid-purged=OFF \
+  echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password=${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
   --no-data ${EXPORT_DB_NAME} > magestore_db_schema.sql"
   
   if [ ! -f "magestore_db_schema.sql" ]; then
-    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password='${EXPORT_PASS}' --opt --single-transaction \
+    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password=${EXPORT_PASS} --opt --single-transaction \
       --quick --set-gtid-purged=OFF --no-data \
     ${EXPORT_DB_NAME} > magestore_db_schema.sql
   else
@@ -86,11 +86,11 @@ if [ "$PULL_DATABASE" == "true" ]; then
 
   echo "Pull database for data:"
   
-  echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password='${EXPORT_PASS}' --opt --single-transaction --quick --set-gtid-purged=OFF \
+  echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password=${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
   --no-create-db --no-create-info ..."
   
   if [ ! -f "magestore_db_data.sql" ]; then
-    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password='${EXPORT_PASS}' --opt --single-transaction --quick --set-gtid-purged=OFF \
+    mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --password=${EXPORT_PASS} --opt --single-transaction --quick --set-gtid-purged=OFF \
       --no-create-db --no-create-info \
       --ignore-table=${EXPORT_DB_NAME}.catalogsearch_fulltext \
       --ignore-table=${EXPORT_DB_NAME}.catalogsearch_query    \
