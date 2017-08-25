@@ -41,9 +41,9 @@ echo "Installing"
 
 echo "Pull source code from git source, enter github username & password:"
 ## clear data/www/
-echo "clearning data/www/*"
 mv data/www/app/etc/local.xml local.xml.bak # backup local file
-#rm -rf data/www
+echo "cleaning data/www/*"
+rm -rf data/www
 mkdir -p data/www
 if [ ! -d "data/.www/.git" ]; then
   echo "Cloning source:"
@@ -53,6 +53,7 @@ else
   echo "Load source from cached"
   cd data/.www && git pull
 fi
+
 cd $CUR_DIR
 echo "copy source to www:"
 cp -Rf ${CUR_DIR}/data/.www/* ${CUR_DIR}/data/www/
@@ -62,6 +63,11 @@ mv local.xml.bak data/www/app/etc/local.xml # restore local.xml file
 if [ ! -f "data/www/app/etc/local.xml" ]; then
   mv data/www/app/etc/local.xml.template data/www/app/etc/local.xml
 fi
+echo "chown data/www:"
+chown -R www-data:www-data data/www
+
+echo "clear data/database:"
+rm -rf data/database
 
 ## create function
 randpw(){ < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-16};echo;}
@@ -75,17 +81,18 @@ fi
 DATE_TIME=$( date -u "+${DATE_TIME}-${DATE_MONTH}-%d %H:%M:%S" ) # compile all together
 
 ## Export database with ignored tables
+## exported file in  data/database mapped to /var/lib/mysql
 PULL_DATABASE=true
 if [ "$PULL_DATABASE" == "true" ]; then
   echo "Pull database for schema, enter root password:"
   
   echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --no-data ..."
   
-  if [ ! -f "magestore_db_schema.sql" ]; then
+  if [ ! -f "data/database/magestore_db_schema.sql" ]; then
     mysqldump --defaults-extra-file=${CUR_DIR}/mysql_pass.cnf \
       --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --opt --single-transaction \
       --quick --set-gtid-purged=OFF --no-data \
-      ${EXPORT_DB_NAME} > magestore_db_schema.sql
+      ${EXPORT_DB_NAME} > data/database/magestore_db_schema.sql
   else
     echo "Use magestore_db_schema.sql from cached"
   fi
@@ -94,7 +101,7 @@ if [ "$PULL_DATABASE" == "true" ]; then
   
   echo "mysqldump --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --no-create-db --no-create-info ..."
   
-  if [ ! -f "magestore_db_data.sql" ]; then
+  if [ ! -f "data/database/magestore_db_data.sql" ]; then
     mysqldump --defaults-extra-file=${CUR_DIR}/mysql_pass.cnf \
       --host=${EXPORT_DB_HOST} --user=${EXPORT_USER} --opt --single-transaction --quick --set-gtid-purged=OFF \
       --no-create-db --no-create-info \
@@ -141,7 +148,7 @@ if [ "$PULL_DATABASE" == "true" ]; then
       --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_monthly \
       --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_aggregated_yearly \
       --ignore-table=${EXPORT_DB_NAME}.report_viewed_product_index \
-      ${EXPORT_DB_NAME} > magestore_db_data.sql
+      ${EXPORT_DB_NAME} > data/database/magestore_db_data.sql
     else
       echo "Use magestore_db_data.sql from cached"
     fi
@@ -156,12 +163,6 @@ chown -R www-data:www-data data/www/media
 echo "clear var/"
 rm -rf data/www/var/*
 
-echo "chown data/www:"
-chown -R www-data:www-data data/www
-
-echo "clear data/database:"
-rm -rf data/database
-
 ## Run docker-compose
 echo "Run docker-compose:"
 docker-compose up -d
@@ -172,12 +173,13 @@ db_user="magestore"
 db_user_pass=$(randpw)
 newrootpass=$(randpw)
 
-## Import database
+## get Import database container id
 container_id_mysql=$( docker ps -q --filter=ancestor=thinlt/mysql:5.6 ) # get container id
 
-echo "Copy database files to mysql container:"
-docker cp magestore_db_schema.sql ${container_id_mysql}:/tmp/magestore_db_schema.sql
-docker cp magestore_db_data.sql ${container_id_mysql}:/tmp/magestore_db_data.sql
+## mysql file imported in /var/lib/mysql and do not need copy
+#echo "Copy database files to mysql container:"
+#docker cp magestore_db_schema.sql ${container_id_mysql}:/tmp/magestore_db_schema.sql
+#docker cp magestore_db_data.sql ${container_id_mysql}:/tmp/magestore_db_data.sql
 
 ## wait for mysql status healthy
 counter=0
@@ -208,14 +210,10 @@ while true ; do
 done
 
 echo "Importing database:"
-#CHECK_MYSQL=$( mysql -Va 2>/dev/null | grep mysql )
-#if [ "$CHECK_MYSQL" != '' ]; then
-#  mysql -u root -p'root' --host= ${db_name} < magestore_db_schema.sql
-#  mysql -u root -p'root' --host= ${db_name} < magestore_db_data.sql
-#fi
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_schema.sql"
-docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /tmp/magestore_db_data.sql"
-
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /var/lib/mysql/magestore_db_schema.sql"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' ${db_name} < /var/lib/mysql/magestore_db_data.sql"
+echo "Delete sql files"
+docker exec -it ${container_id_mysql} rm /var/lib/mysql/magestore_db_schema.sql /var/lib/mysql/magestore_db_data.sql
 
 echo "delete Customer in database container:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"DELETE FROM customer_entity WHERE created_at < '{DATE_TIME}'\" ${db_name}"
@@ -230,13 +228,14 @@ docker exec -it ${container_id_mysql} /bin/bash -c "mysql -u root -p'root' -e \"
   SET value = '${DOMAIN_NAME}' WHERE path = 'web/cookie/cookie_domain' \" ${db_name}"
 
 ## Clean files
-echo "Delete sql files in mysql container:"
-docker exec -it ${container_id_mysql} rm /tmp/magestore_db_schema.sql
-docker exec -it ${container_id_mysql} rm /tmp/magestore_db_data.sql
-echo "Delete file magestore_db_schema.sql"
-rm magestore_db_schema.sql
-echo "Delete file magestore_db_data.sql"
-rm magestore_db_data.sql
+#echo "Delete sql files in mysql container:"
+#docker exec -it ${container_id_mysql} rm /tmp/magestore_db_schema.sql
+#docker exec -it ${container_id_mysql} rm /tmp/magestore_db_data.sql
+
+#echo "Delete file magestore_db_schema.sql"
+#rm magestore_db_schema.sql
+#echo "Delete file magestore_db_data.sql"
+#rm magestore_db_data.sql
 
 ## create database user
 echo "create user \`${db_user}\` access database:"
