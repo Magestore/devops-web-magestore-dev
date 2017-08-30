@@ -186,7 +186,7 @@ container_ip_varnish=$( docker inspect -f '{{range .NetworkSettings.Networks}}{{
 
 ## add require ip to secure/.htaccess
 if [ ! -z ${container_ip_varnish} ]; then
-sed '/Require ip/a Require ip '${container_ip_varnish} data/www/secure/.htaccess > /tmp/secure_htaccess \
+sed "0,/Require ip/s//Require ip ${container_ip_varnish}\n&/ " data/www/secure/.htaccess > /tmp/secure_htaccess \
   && cat /tmp/secure_htaccess > data/www/secure/.htaccess
 fi
 
