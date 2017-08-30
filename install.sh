@@ -181,14 +181,14 @@ newrootpass=$(randpw)
 container_id_mysql=$( docker ps -q --filter=ancestor=thinlt/mysql:5.6 ) # get container id
 
 ## create client user/password to file.cnf
-mysql_login_info=$( cat <<EOF
+cat <<EOF > mysql_login_info.cnf
 [client]
 host     = localhost
 user     = root
 password = root
 EOF
-)
-docker exec -it ${container_id_mysql} /bin/bash -c "echo ${mysql_login_info} > mysql_login_info.cnf"
+
+docker cp mysql_login_info.cnf ${container_id_mysql}:/mysql_login_info.cnf
 
 
 ## mysql file imported in /var/lib/mysql and do not need copy
