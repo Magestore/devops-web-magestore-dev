@@ -180,6 +180,15 @@ newrootpass=$(randpw)
 
 ## get Import database container id
 container_id_mysql=$( docker ps -q --filter=ancestor=thinlt/mysql:5.6 ) # get container id
+## get varnish container ID and IP
+container_id_varnish=$( docker ps -q --filter=ancestor=thinlt/varnish:5.1 ) # get container id
+container_ip_varnish=$( docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${container_id_varnish} )
+
+## add require ip to secure/.htaccess
+if [ ! -z ${container_ip_varnish} ]; then
+sed '/Require ip/a Require ip '${container_ip_varnish} data/www/secure/.htaccess > /tmp/secure_htaccess \
+  && cat /tmp/secure_htaccess > data/www/secure/.htaccess
+fi
 
 ## create client user/password to file.cnf
 cat <<EOF > mysql_login_info.cnf
