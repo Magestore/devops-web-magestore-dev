@@ -39,12 +39,15 @@ read DOMAIN
 ## Install
 echo "Installing"
 
-echo "Pull source code from git source, enter github username & password:"
+if [ -f "data/www/app/etc/local.xml" ]; then
+  mv data/www/app/etc/local.xml local.xml.bak # backup local file if exist
+fi
+
 ## clear data/www/
-mv data/www/app/etc/local.xml local.xml.bak # backup local file
 echo "cleaning data/www/*"
 rm -rf data/www
 mkdir -p data/www
+echo "Pull source code from git source, enter github username & password:"
 if [ ! -d "data/.www/.git" ]; then
   echo "Cloning source:"
   rm -rf data/.www
