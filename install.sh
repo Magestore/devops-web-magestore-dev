@@ -60,6 +60,7 @@ fi
 cd $CUR_DIR
 echo "copy source to www:"
 cp -Rf ${CUR_DIR}/data/.www/* ${CUR_DIR}/data/www/
+cp -Rf ${CUR_DIR}/data/.www/.* ${CUR_DIR}/data/www/
 rm -rf data/www/.git # remove git info
 ## create local.xml file
 cp -f local.xml.bak data/www/app/etc/local.xml
