@@ -53,9 +53,6 @@ echo "create media dir:"
 mkdir -p data/www/media
 chown -R www-data:www-data data/www/media
 
-echo "clear var/"
-rm -rf data/www/var/*
-
 ## get varnish container ID and IP
 container_id_varnish=$( docker ps -q --filter=ancestor=thinlt/varnish:5.1 ) # get container id
 container_ip_varnish=$( docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${container_id_varnish} )
@@ -69,3 +66,5 @@ fi
 ## Restart docker-compose
 echo "Restart docker-compose"
 docker-compose restart
+echo "clear var/"
+rm -rf data/www/var/*
