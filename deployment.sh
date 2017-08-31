@@ -47,11 +47,25 @@ if [ -f ${CUR_DIR}/data/local.xml.backup ];then
 fi
 
 echo "chown data/www:"
-chown -R www-data:www-data data/www
+chown -R www-data:staff data/www
 
 echo "create media dir:"
 mkdir -p data/www/media
-chown -R www-data:www-data data/www/media
+chown -R www-data:staff data/www/media
+
+## secure for media/ folder
+cat <<EOF > data/www/media/.htaccess
+php_flag engine off
+
+<Files ^(*.php|*.phps)>
+    order deny,allow
+    deny from all
+</Files>
+
+<FilesMatch "\.(php|pl|py|jsp|asp|htm|shtml|sh|cgi.+)$">
+    ForceType text/plain
+</FilesMatch>
+EOF
 
 ## get varnish container ID and IP
 container_id_varnish=$( docker ps -q --filter=ancestor=thinlt/varnish:5.1 ) # get container id
