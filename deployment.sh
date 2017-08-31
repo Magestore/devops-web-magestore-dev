@@ -65,3 +65,7 @@ if [ ! -z ${container_ip_varnish} ]; then
 sed "0,/Require ip/s//Require ip ${container_ip_varnish}\n&/ " data/www/secure/.htaccess > /tmp/secure_htaccess \
   && cat /tmp/secure_htaccess > data/www/secure/.htaccess
 fi
+
+## Restart docker-compose
+echo "Restart docker-compose"
+docker-compose restart
