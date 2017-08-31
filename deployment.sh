@@ -78,6 +78,7 @@ sed "0,/Require ip/s//Require ip ${container_ip_varnish}\n&/ " data/www/secure/.
 fi
 
 ## Restart docker-compose
+cd $CUR_DIR
 echo "Restart docker-compose"
 docker-compose restart
 echo "clear var/"
