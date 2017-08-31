@@ -16,10 +16,20 @@ if [ ! -d "data/.www/.git" ]; then
   echo "Cloning source from branch ${BRANCH}:"
   rm -rf data/.www
   git clone -b ${BRANCH} https://github.com/Magestore/Magestore-1.9.3.2.git data/.www
+  check_branch=$( cd ${CUR_DIR}/data/.www && git branch -r | grep ${BRANCH} | wc -l )
+  if [ ${check_branch} -lt 1 ]; then
+    echo "No branch choose ${BRANCH}"
+    exit 0
+  fi
 else
   echo "Load source from branch ${BRANCH}"
   cd ${CUR_DIR}/data/.www && git reset --hard HEAD
   cd ${CUR_DIR}/data/.www && git fetch
+  check_branch=$( cd ${CUR_DIR}/data/.www && git branch -r | grep ${BRANCH} | wc -l )
+  if [ ${check_branch} -lt 1 ]; then
+    echo "No branch choose ${BRANCH}"
+    exit 0
+  fi
   cd ${CUR_DIR}/data/.www && git checkout ${BRANCH}
   cd ${CUR_DIR}/data/.www && git pull
 fi
