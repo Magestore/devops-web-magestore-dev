@@ -248,9 +248,9 @@ DOMAIN_NAME=$( echo ${DOMAIN} | sed 's/https:\/\///' | sed 's/http:\/\///' | awk
 
 echo "change domain:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"UPDATE core_config_data \
-  SET value = 'http:\/\/${DOMAIN_NAME}' WHERE path LIKE '%secure\/base_url%' \" ${db_name}"
+  SET value = 'http://${DOMAIN_NAME}' WHERE path LIKE '%secure/base_url%' \" ${db_name}"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"UPDATE core_config_data \
-  SET value = 'https:\/\/${DOMAIN_NAME}' WHERE path LIKE '%secure\/base_url%' \" ${db_name}"
+  SET value = 'https://${DOMAIN_NAME}' WHERE path LIKE '%secure/base_url%' \" ${db_name}"
 
 echo "change cookie donain/path:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"UPDATE core_config_data \
