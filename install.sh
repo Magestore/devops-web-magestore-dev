@@ -243,12 +243,16 @@ docker exec -it ${container_id_mysql} rm /var/lib/mysql/magestore_db_schema.sql 
 echo "delete Customer in database container:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"DELETE FROM customer_entity WHERE created_at < '{DATE_TIME}'\" ${db_name}"
 
+## Domain name
+DOMAIN_NAME=$( echo ${DOMAIN} | sed 's/https:\/\///' | sed 's/http:\/\///' | awk -F'/' '{print $1}' )
+
 echo "change domain:"
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"UPDATE core_config_data \
-  SET value = '${DOMAIN}' WHERE path LIKE '%base_url%' \" ${db_name}"
+  SET value = 'http:\/\/${DOMAIN_NAME}' WHERE path LIKE '%secure\/base_url%' \" ${db_name}"
+docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"UPDATE core_config_data \
+  SET value = 'https:\/\/${DOMAIN_NAME}' WHERE path LIKE '%secure\/base_url%' \" ${db_name}"
 
 echo "change cookie donain/path:"
-DOMAIN_NAME=$( echo ${DOMAIN} | sed 's/https:\/\///' | sed 's/http:\/\///' | awk -F'/' '{print $1}' )
 docker exec -it ${container_id_mysql} /bin/bash -c "mysql --defaults-extra-file=mysql_login_info.cnf -e \"UPDATE core_config_data \
   SET value = '${DOMAIN_NAME}' WHERE path = 'web/cookie/cookie_domain' \" ${db_name}"
 
