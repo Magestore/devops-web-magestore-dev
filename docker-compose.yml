@@ -34,6 +34,14 @@ services:
   apache-php:
     # thinlt/apache-php available tags: latest, 7.2, 5.6.
     image: thinlt/apache-php:5.6
+    deploy:
+      resources:
+        limits:
+          cpus: '0.001'
+          memory: 150M
+        reservations:
+          cpus: '0.0001'
+          memory: 20M
     ports:
       # 8008 works without varnish.
       - "8008:80"
