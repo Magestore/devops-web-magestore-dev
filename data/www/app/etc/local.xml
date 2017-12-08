@@ -41,9 +41,9 @@
             <default_setup>
                 <connection>
                     <host><![CDATA[localhost]]></host>
-                    <username><![CDATA[magestore]]></username>
-                    <password><![CDATA[Wj3#qfr%73e^ZU^m5&u4i&4b6z]]></password>
-                    <dbname><![CDATA[magestore_live]]></dbname>
+                    <username><![CDATA[dbuser]]></username>
+                    <password><![CDATA[dbpassword]]></password>
+                    <dbname><![CDATA[dbname]]></dbname>
                     <initStatements><![CDATA[SET NAMES utf8]]></initStatements>
                     <model><![CDATA[mysql4]]></model>
                     <type><![CDATA[pdo_mysql]]></type>
